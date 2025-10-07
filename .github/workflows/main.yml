@@ -1,0 +1,35 @@
+name: Build Android APK
+
+# Roda o workflow sempre que houver push na branch main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      # Pega o código do repositório
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Configura o JDK (necessário pro Gradle)
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Instala dependências (Gradle wrapper)
+      - name: Build APK
+        run: ./gradlew assembleRelease
+
+      # Salva o APK como artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: EvoDental-APK
+          path: app/build/outputs/apk/release/app-release.apk
